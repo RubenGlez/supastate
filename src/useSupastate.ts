@@ -58,7 +58,7 @@ function dispatch(action: Action) {
   listeners.forEach((listener) => listener(memoryState));
 }
 
-export const useSupastore = () => {
+export const useSupastate = () => {
   const [state, setState] = useState(memoryState);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 {
-  "name": "supastore",
-  "version": "0.0.1",
+  "name": "supastate",
+  "version": "0.1.0",
   "description": "A lightweight, easy-to-use React hook for managing global state without the complexity of external state management libraries",
   "type": "module",
   "main": "dist/index.js",

@@ -1,8 +1,8 @@
-# supastore
+# supastate
 
 > :warning: **Work In Progress:** This hook is currently under development and might be subject to breaking changes. Use with caution in production environments.
 
-A lightweight, easy-to-use React hook for managing global state without the complexity of external state management libraries. Designed to be minimal yet powerful, `useSupastore` offers a simple API for state operations like adding, updating, and deleting items, as well as clearing the entire state, making it ideal for small to medium-sized applications that require global state management.
+A lightweight, easy-to-use React hook for managing global state without the complexity of external state management libraries. Designed to be minimal yet powerful, `useSupastate` offers a simple API for state operations like adding, updating, and deleting items, as well as clearing the entire state, making it ideal for small to medium-sized applications that require global state management.
 
 ## Features
 
@@ -17,13 +17,13 @@ A lightweight, easy-to-use React hook for managing global state without the comp
 ## Installation
 
 ```bash
-npm install supastore
+npm install supastate
 ```
 
 Or using yarn:
 
 ```bash
-yarn add supastore
+yarn add supastate
 ```
 
 ## Usage
@@ -32,10 +32,10 @@ Here's a quick example to get you started:
 
 ```jsx
 import React from "react";
-import { useSupastore } from "supastore";
+import { useSupastate } from "supastate";
 
 const App = () => {
-  const { state, addItem, deleteItem } = useSupastore();
+  const { state, addItem, deleteItem } = useSupastate();
 
   return (
     <div>
@@ -62,7 +62,7 @@ export default App;
 
 ## Browser Support
 
-supastore is designed to work in most modern browsers. For older browsers, make sure to test and implement necessary polyfills.
+supastate is designed to work in most modern browsers. For older browsers, make sure to test and implement necessary polyfills.
 
 ## Contributing
 
@@ -70,10 +70,10 @@ Contributions are always welcome! Please read the contributing guide (WIP) for m
 
 ## License
 
-supastore is MIT licensed.
+supastate is MIT licensed.
 
 ## Support
 
 If you need help or have any questions, please open an issue in the GitHub repository.
 
-Thank you for using supastore!
+Thank you for using supastate!
