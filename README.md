@@ -39,7 +39,7 @@ const App = () => {
 
   return (
     <div>
-      <button onClick={() => addItem("New Item")}>Add Item</button>
+      <button onClick={() => addItem("itemName", "New Item")}>Add Item</button>
       {Object.keys(state).map((key) => (
         <div key={key}>
           {state[key]}
@@ -55,7 +55,7 @@ export default App;
 
 ## API Reference
 
-- `addItem(value: string | number | boolean)`: Adds a new item to the state.
+- `addItem(key: string, value: string | number | boolean)`: Adds a new item to the state.
 - `updateItem(key: string, value: string | number | boolean)`: Updates an existing item in the state.
 - `deleteItem(key: string)`: Removes an item from the state.
 - `deleteAll()`: Clears the entire state.
