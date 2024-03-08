@@ -43,5 +43,9 @@
   "jest": {
     "testEnvironment": "jsdom",
     "preset": "ts-jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RubenGlez/supastate.git"
   }
 }
