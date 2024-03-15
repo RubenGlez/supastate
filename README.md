@@ -2,17 +2,18 @@
 
 > :warning: **Work In Progress:** This hook is currently under development and might be subject to breaking changes. Use with caution in production environments.
 
-A lightweight, easy-to-use React hook for managing global state without the complexity of external state management libraries. Designed to be minimal yet powerful, `useSupastate` offers a simple API for state operations like adding, updating, and deleting items, as well as clearing the entire state, making it ideal for small to medium-sized applications that require global state management.
+A lightweight, easy-to-use React hook for managing global state without the complexity of external state management libraries. Designed to be minimal yet powerful, `supastate` offers a customizable API for state operations like adding, updating, and deleting items, as well as clearing the entire state. It's ideal for small to medium-sized applications that require flexible global state management.
 
 ## Features
 
-- **Simple Global State Management**: Easily manage global state across your application without the boilerplate code.
-- **CRUD Operations**: Built-in functions to create, read, update, and delete state items.
+- **Flexible Global State Management**: Manage global state with a flexible structure, supporting objects, arrays, Maps, Sets, and more.
+- **Customizable State Initialization**: Define the initial state structure and types for your application state.
+- **CRUD Operations**: Built-in functions to create, read, update, and delete state items, with type safety.
 - **Performance Optimized**: Only re-renders components subscribed to the changed parts of the state.
-- **TypeScript Support**: Comes with TypeScript types for better development experience.
-- **Middleware Support**: Integrate middleware for handling side effects, logging, and more.
+- **TypeScript Support**: Enhanced TypeScript types for an improved development experience, ensuring type safety across your state management.
+- **Middleware Support**: Easily integrate middleware for handling side effects, logging, and more.
 - **Persistence Option**: Optionally persist your state to `localStorage` or other storage mechanisms to retain state between sessions.
-- **Easy Integration**: Use alongside existing projects without major refactoring.
+- **Easy Integration**: Seamlessly use alongside existing projects without major refactoring.
 
 ## Installation
 
@@ -32,20 +33,25 @@ Here's a quick example to get you started:
 
 ```jsx
 import React from "react";
-import { useSupastate } from "supastate";
+import { createSupastate } from "supastate";
+
+// Define your initial state
+const initialState = {
+  count: 0,
+  items: ["Item 1", "Item 2"],
+};
+
+// Create a custom hook instance
+const useSupastate = createSupastate(initialState);
 
 const App = () => {
-  const { state, addItem, deleteItem } = useSupastate();
+  const { state, set, update } = useSupastate();
 
+  // Use set, update to modify the state
   return (
     <div>
-      <button onClick={() => addItem("itemName", "New Item")}>Add Item</button>
-      {Object.keys(state).map((key) => (
-        <div key={key}>
-          {state[key]}
-          <button onClick={() => deleteItem(key)}>Delete</button>
-        </div>
-      ))}
+      <p>Count: {state.count}</p>
+      {/* Further usage */}
     </div>
   );
 };
@@ -55,10 +61,9 @@ export default App;
 
 ## API Reference
 
-- `addItem(key: string, value: string | number | boolean)`: Adds a new item to the state.
-- `updateItem(key: string, value: string | number | boolean)`: Updates an existing item in the state.
-- `deleteItem(key: string)`: Removes an item from the state.
-- `deleteAll()`: Clears the entire state.
+- `set(payload: T)`: Sets the new state.
+- `update(updater: (state: T) => T)`: Updates the state based on the previous state.
+- `createSupastate(initialState: T)`: Creates a new instance of the supastate hook with the defined initial state.
 
 ## Browser Support
 
@@ -80,30 +85,26 @@ Thank you for using supastate!
 
 ## Roadmap
 
-### 1. State Type Flexibility
-
-- **Description:** This feature allows users to define the structure of their state, providing a generic API to handle different data structures such as objects, arrays, Maps, Sets, etc. This enhancement aims to offer greater versatility and customization for managing application state.
-
-### 2. Middleware and Enhancers
+### 1. Middleware and Enhancers
 
 - **Middleware:** Introduces support for middleware, enabling developers to intercept actions before they reach the reducer. This is beneficial for handling asynchronous logic, logging, and more.
 - **Enhancers:** Enhancers allow for the modification of the store or the extension of its functionality, such as state persistence in localStorage.
 
-### 3. Development and Debugging Tools
+### 2. Development and Debugging Tools
 
 - **Redux DevTools Integration:** Even if not using Redux directly, integration with Redux DevTools is provided. This offers developers powerful debugging tools.
 - **Logging:** A built-in logging system is implemented to facilitate debugging, recording dispatched actions and state changes.
 
-### 4. Performance Optimizations
+### 3. Performance Optimizations
 
 - **Selectors:** The use of selectors to derive data from the state is introduced, allowing for optimizations such as memoization to prevent unnecessary recalculations.
 - **Batching of Updates:** Strategies for grouping state updates are implemented to minimize the number of re-renders, enhancing application performance.
 
-### 5. Asynchronous Handling API
+### 4. Asynchronous Handling API
 
 - **Asynchronous Actions:** An integrated solution for handling asynchronous actions is offered, easing the management of side effects like API calls.
 
-### 6. Compatibility and Flexibility
+### 5. Compatibility and Flexibility
 
 - **Additional Hooks:** Additional custom hooks for common use cases, such as `useSelect` for accessing specific parts of the state, are considered.
 - **TypeScript Support:** Full TypeScript support is ensured, improving the development experience with strong typing and auto-completion.
