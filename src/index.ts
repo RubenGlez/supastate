@@ -1,1 +1,1 @@
-export { useSupastate } from "./useSupastate";
+export { createSupastate } from "./useSupastate";
