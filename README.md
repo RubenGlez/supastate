@@ -77,3 +77,33 @@ supastate is MIT licensed.
 If you need help or have any questions, please open an issue in the GitHub repository.
 
 Thank you for using supastate!
+
+## Roadmap
+
+### 1. State Type Flexibility
+
+- **Description:** This feature allows users to define the structure of their state, providing a generic API to handle different data structures such as objects, arrays, Maps, Sets, etc. This enhancement aims to offer greater versatility and customization for managing application state.
+
+### 2. Middleware and Enhancers
+
+- **Middleware:** Introduces support for middleware, enabling developers to intercept actions before they reach the reducer. This is beneficial for handling asynchronous logic, logging, and more.
+- **Enhancers:** Enhancers allow for the modification of the store or the extension of its functionality, such as state persistence in localStorage.
+
+### 3. Development and Debugging Tools
+
+- **Redux DevTools Integration:** Even if not using Redux directly, integration with Redux DevTools is provided. This offers developers powerful debugging tools.
+- **Logging:** A built-in logging system is implemented to facilitate debugging, recording dispatched actions and state changes.
+
+### 4. Performance Optimizations
+
+- **Selectors:** The use of selectors to derive data from the state is introduced, allowing for optimizations such as memoization to prevent unnecessary recalculations.
+- **Batching of Updates:** Strategies for grouping state updates are implemented to minimize the number of re-renders, enhancing application performance.
+
+### 5. Asynchronous Handling API
+
+- **Asynchronous Actions:** An integrated solution for handling asynchronous actions is offered, easing the management of side effects like API calls.
+
+### 6. Compatibility and Flexibility
+
+- **Additional Hooks:** Additional custom hooks for common use cases, such as `useSelect` for accessing specific parts of the state, are considered.
+- **TypeScript Support:** Full TypeScript support is ensured, improving the development experience with strong typing and auto-completion.
