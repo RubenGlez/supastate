@@ -1,19 +1,24 @@
+![supastate](/src/supastate.jpg)
+
 # supastate
 
-> :warning: **Work In Progress:** This hook is currently under development and might be subject to breaking changes. Use with caution in production environments.
-
-A lightweight, easy-to-use React hook for managing global state without the complexity of external state management libraries. Designed to be minimal yet powerful, `supastate` offers a customizable API for state operations like adding, updating, and deleting items, as well as clearing the entire state. It's ideal for small to medium-sized applications that require flexible global state management.
+A lightweight, easy-to-use React hook for managing global state without the complexity of external state management libraries. Designed to be minimal yet powerful, `supastate` enables developers to efficiently manage serializable state with operations that include setting, updating, and effectively reacting to state changes. It's ideal for small to medium-sized applications that require flexible global state management.
 
 ## Features
 
-- **Flexible Global State Management**: Manage global state with a flexible structure, supporting objects, arrays, Maps, Sets, and more.
-- **Customizable State Initialization**: Define the initial state structure and types for your application state.
-- **CRUD Operations**: Built-in functions to create, read, update, and delete state items, with type safety.
-- **Performance Optimized**: Only re-renders components subscribed to the changed parts of the state.
-- **TypeScript Support**: Enhanced TypeScript types for an improved development experience, ensuring type safety across your state management.
-- **Middleware Support**: Easily integrate middleware for handling side effects, logging, and more.
-- **Persistence Option**: Optionally persist your state to `localStorage` or other storage mechanisms to retain state between sessions.
-- **Easy Integration**: Seamlessly use alongside existing projects without major refactoring.
+- **Custom Hook Factory**: Generate tailor-made React hooks (`useSupastate`) for efficient state management in applications.
+- **Serializable State Only**: Supports states that are serializable, enhancing compatibility with JSON serialization for features like state persistence.
+- **In-Memory State**: Maintains state in memory for fast access and updates, with each hook managing its own state.
+- **Flexible State Updates**:
+  - **Direct Set**: Allows direct replacement of the current state.
+  - **Updater Function**: Enables complex state transformations through a functional updater.
+- **Automatic Update Propagation**: Uses a listener pattern for automatic re-rendering of components on state updates.
+- **Clean-Up Mechanism**: Automatically removes listeners on component unmount, preventing memory leaks.
+- **Minimal API**: Simplifies state management with an intuitive and minimalistic API, reducing boilerplate.
+- **Immutable Updates**: Promotes state immutability for reliable and predictable updates.
+- **Easy Integration**: Designed for seamless integration into existing React projects with minimal setup.
+
+Leverage the power of React's ecosystem with this lightweight, intuitive state management solution.
 
 ## Installation
 
@@ -35,28 +40,67 @@ Here's a quick example to get you started:
 import React from "react";
 import { createSupastate } from "supastate";
 
-// Define your initial state
-const initialState = {
-  count: 0,
-  items: ["Item 1", "Item 2"],
-};
+// Using createSupastate to create a global state for a user profile
+const useUserProfile = createSupastate({ name: "John Doe", age: 30 }); // Initial state is a profile object
 
-// Create a custom hook instance
-const useSupastate = createSupastate(initialState);
+// UserProfile Component: Displays the user's name and age
+function UserProfile() {
+  const { state: userProfile } = useUserProfile();
 
-const App = () => {
-  const { state, set, update } = useSupastate();
-
-  // Use set, update to modify the state
   return (
     <div>
-      <p>Count: {state.count}</p>
-      {/* Further usage */}
+      <p>Name: {userProfile.name}</p>
+      <p>Age: {userProfile.age}</p>
     </div>
   );
-};
+}
 
-export default App;
+// UpdateName Component: Has an input field to update the user's name
+function UpdateName() {
+  const { update } = useUserProfile();
+
+  return (
+    <input
+      type="text"
+      placeholder="Enter new name"
+      onChange={(e) =>
+        update((currentProfile) => ({
+          ...currentProfile,
+          name: e.target.value,
+        }))
+      }
+    />
+  );
+}
+
+// IncrementAge Component: Has a button to increment the user's age
+function IncrementAge() {
+  const { update } = useUserProfile();
+
+  return (
+    <button
+      onClick={() =>
+        update((currentProfile) => ({
+          ...currentProfile,
+          age: currentProfile.age + 1,
+        }))
+      }
+    >
+      Increment Age
+    </button>
+  );
+}
+
+// Main application that uses the UserProfile, UpdateName, and IncrementAge components
+function App() {
+  return (
+    <div>
+      <UserProfile />
+      <UpdateName />
+      <IncrementAge />
+    </div>
+  );
+}
 ```
 
 ## API Reference
@@ -65,46 +109,39 @@ export default App;
 - `update(updater: (state: T) => T)`: Updates the state based on the previous state.
 - `createSupastate(initialState: T)`: Creates a new instance of the supastate hook with the defined initial state.
 
-## Browser Support
-
-supastate is designed to work in most modern browsers. For older browsers, make sure to test and implement necessary polyfills.
-
-## Contributing
-
-Contributions are always welcome! Please read the contributing guide (WIP) for more details on how to contribute to this project.
-
-## License
-
-supastate is MIT licensed.
-
 ## Support
 
 If you need help or have any questions, please open an issue in the GitHub repository.
 
 Thank you for using supastate!
 
+---
+
 ## Roadmap
 
-### 1. Middleware and Enhancers
+### 1. **Functional Enhancements**
 
-- **Middleware:** Introduces support for middleware, enabling developers to intercept actions before they reach the reducer. This is beneficial for handling asynchronous logic, logging, and more.
-- **Enhancers:** Enhancers allow for the modification of the store or the extension of its functionality, such as state persistence in localStorage.
+- **Async Actions Support**: Makes handling asynchronous operations easier.
+- **Middlewares**: Enables adding extra logic for actions, useful for activities like logging and persistence.
+- **State Persistence**: Integrates methods to maintain state between sessions using `localStorage` or local databases.
 
-### 2. Development and Debugging Tools
+### 2. **Performance Optimization**
 
-- **Redux DevTools Integration:** Even if not using Redux directly, integration with Redux DevTools is provided. This offers developers powerful debugging tools.
-- **Logging:** A built-in logging system is implemented to facilitate debugging, recording dispatched actions and state changes.
+- **Memoization**: Utilizes memoization to improve efficiency.
+- **Updates Batching**: Minimizes re-renders by grouping state updates.
 
-### 3. Performance Optimizations
+### 3. **Testing and Security**
 
-- **Selectors:** The use of selectors to derive data from the state is introduced, allowing for optimizations such as memoization to prevent unnecessary recalculations.
-- **Batching of Updates:** Strategies for grouping state updates are implemented to minimize the number of re-renders, enhancing application performance.
+- **Testing**: Implements unit and integration tests to ensure reliability.
+- **Data Sanitization**: Protects against security risks by sanitizing user inputs.
 
-### 4. Asynchronous Handling API
+### 4. **Compatibility and Usability**
 
-- **Asynchronous Actions:** An integrated solution for handling asynchronous actions is offered, easing the management of side effects like API calls.
+- **Additional Hooks**: Adds hooks to ease common use cases.
+- **Concurrent Mode and TypeScript Support**: Ensures compatibility with the latest React features and enhances experience with TypeScript support.
 
-### 5. Compatibility and Flexibility
+### 5. **Community**
 
-- **Additional Hooks:** Additional custom hooks for common use cases, such as `useSelect` for accessing specific parts of the state, are considered.
-- **TypeScript Support:** Full TypeScript support is ensured, improving the development experience with strong typing and auto-completion.
+- **Documentation and Repository**: Provides detailed documentation and manages an accessible repository to encourage collaboration.
+- **User Feedback**: Adjusts the roadmap based on user suggestions and needs.
+- **Continuous Update**: Stays updated with React advancements.
