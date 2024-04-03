@@ -23,12 +23,10 @@ Leverage the power of React's ecosystem with this lightweight, intuitive state m
 ## Installation
 
 ```bash
+# npm
 npm install supastate
-```
 
-Or using yarn:
-
-```bash
+# yarn
 yarn add supastate
 ```
 
@@ -109,9 +107,9 @@ function App() {
 - `update(updater: (state: T) => T)`: Updates the state based on the previous state.
 - `createSupastate(initialState: T)`: Creates a new instance of the supastate hook with the defined initial state.
 
-## Support
+## Support & Contributing
 
-If you need help or have any questions, please open an issue in the GitHub repository.
+If you need help or have any questions about supaclipboard, please don't hesitate to open an issue in the GitHub repository. I'm always here to help and would love to hear your feedback. If you're interested in contributing to the library, whether it's by reporting bugs, suggesting features, or submitting improvements, your contributions are greatly appreciated. Please feel free to open an issue or submit a pull request.
 
 Thank you for using supastate!
 
