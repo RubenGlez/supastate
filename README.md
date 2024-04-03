@@ -17,6 +17,7 @@ A lightweight, easy-to-use React hook for managing global state without the comp
 - **Minimal API**: Simplifies state management with an intuitive and minimalistic API, reducing boilerplate.
 - **Immutable Updates**: Promotes state immutability for reliable and predictable updates.
 - **Easy Integration**: Designed for seamless integration into existing React projects with minimal setup.
+- **State Persistence**: Provides methods to maintain state between sessions using `localStorage`.
 
 Leverage the power of React's ecosystem with this lightweight, intuitive state management solution.
 
@@ -105,6 +106,7 @@ function App() {
 
 - `set(payload: T)`: Sets the new state.
 - `update(updater: (state: T) => T)`: Updates the state based on the previous state.
+- `reset()`: Resets the state to the initial state.
 - `createSupastate(initialState: T)`: Creates a new instance of the supastate hook with the defined initial state.
 
 ## Support & Contributing
@@ -121,7 +123,6 @@ Thank you for using supastate!
 
 - **Async Actions Support**: Makes handling asynchronous operations easier.
 - **Middlewares**: Enables adding extra logic for actions, useful for activities like logging and persistence.
-- **State Persistence**: Integrates methods to maintain state between sessions using `localStorage` or local databases.
 
 ### 2. **Performance Optimization**
 
