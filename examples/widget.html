@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Widget — supastate</title>
+  <style>
+    body { font-family: sans-serif; max-width: 480px; margin: 4rem auto; padding: 0 1rem; }
+    h1 { margin-bottom: 0.25rem; }
+    p { color: #666; margin-bottom: 2rem; }
+    button { padding: 0.5rem 1.25rem; font-size: 1rem; cursor: pointer; border: 1px solid #ccc; border-radius: 6px; background: #fff; }
+    button:hover { background: #f5f5f5; }
+    .panel { margin-top: 1.5rem; border: 1px solid #e0e0e0; border-radius: 8px; padding: 1.5rem; }
+    .panel h2 { margin: 0 0 1rem; font-size: 1.1rem; }
+    .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .row label { color: #444; }
+    .row span { font-weight: 600; }
+    .controls { display: flex; gap: 0.5rem; margin-top: 1rem; }
+    .controls button { flex: 1; }
+  </style>
+</head>
+<body>
+  <h1>Widget</h1>
+  <p>Bindings are created when the panel opens and cleaned up when it closes.</p>
+
+  <button id="toggle">Open panel</button>
+
+  <div id="panel" class="panel" style="display:none">
+    <h2>Live stats</h2>
+    <div class="row"><label>Count</label><span id="count"></span></div>
+    <div class="row"><label>Doubled</label><span id="doubled"></span></div>
+    <div class="row"><label>Status</label><span id="status"></span></div>
+    <div class="controls">
+      <button id="dec">−</button>
+      <button id="inc">+</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { reactive, text } from '../dist/index.mjs'
+
+    const state = reactive({ count: 0 })
+
+    const panel = document.getElementById('panel')
+    const toggleBtn = document.getElementById('toggle')
+
+    let cleanups = []
+
+    function mount() {
+      cleanups = [
+        text('#count',   () => state.count),
+        text('#doubled', () => state.count * 2),
+        text('#status',  () => state.count === 0 ? 'neutral' : state.count > 0 ? 'positive' : 'negative'),
+      ]
+      panel.style.display = 'block'
+      toggleBtn.textContent = 'Close panel'
+    }
+
+    function unmount() {
+      cleanups.forEach(stop => stop())
+      cleanups = []
+      panel.style.display = 'none'
+      toggleBtn.textContent = 'Open panel'
+    }
+
+    toggleBtn.onclick = () => panel.style.display === 'none' ? mount() : unmount()
+
+    document.getElementById('inc').onclick = () => state.count++
+    document.getElementById('dec').onclick = () => state.count--
+  </script>
+</body>
+</html>

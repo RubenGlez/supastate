@@ -137,6 +137,7 @@ stop() // element no longer updates
 | [Todo list](examples/todo.html) | Array reactivity, attr binding, dynamic lists |
 | [Theme toggle](examples/theme-toggle.html) | className and text bindings |
 | [Form preview](examples/form-preview.html) | Live preview from form inputs |
+| [Widget](examples/widget.html) | Bindings created on mount and cleaned up on unmount |
 
 ---
 
