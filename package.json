@@ -1,6 +1,6 @@
 {
   "name": "supastate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tiny reactive engine for plain HTML and vanilla JavaScript",
   "type": "module",
   "main": "dist/index.js",
