@@ -12,7 +12,7 @@
 
 ---
 
-## v1.1 — Async resources
+## v1.1 — Async resources (done)
 
 Introduce `resource()` for managing async state with first-class loading and error handling.
 

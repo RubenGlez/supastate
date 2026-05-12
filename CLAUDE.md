@@ -25,6 +25,7 @@ Supastate is a tiny reactive engine for plain HTML and vanilla JavaScript. No fr
 
 - `src/reactive.ts` — the entire reactive core: `reactive()` and `effect()`
 - `src/dom.ts` — DOM bindings built on top of `effect()`: `bind`, `text`, `attr`, `className`, `style`
+- `src/resource.ts` — async resource primitive: `resource(fetcher, options?)`
 - `src/index.ts` — re-exports everything as the public API
 
 ### How reactivity works
@@ -47,4 +48,4 @@ Rollup produces `dist/index.js` (CJS), `dist/index.mjs` (ESM), and `dist/index.d
 
 ### Scope constraints
 
-Do not introduce: components, lifecycle hooks, virtual DOM, template syntax, custom HTML attributes, or a router. See `ROADMAP.md` for what is planned next (`resource()`, persistence, computed values).
+Do not introduce: components, lifecycle hooks, virtual DOM, template syntax, custom HTML attributes, or a router. See `ROADMAP.md` for what is planned next (persistence, computed values).

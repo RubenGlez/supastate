@@ -120,6 +120,34 @@ style('#overlay', () => ({ opacity: state.visible ? '1' : '0' }))
 
 ---
 
+### `resource(fetcher, options?)`
+
+Manages async state with reactive loading and error tracking. Re-fetches automatically when any reactive value read synchronously inside `fetcher` changes.
+
+```js
+const post = resource(async () => {
+  const res = await fetch(`/api/posts/${state.id}`)
+  return res.json()
+})
+
+text('#title', () => post.loading ? 'Loading…' : post.data.title)
+text('#error', () => post.error?.message ?? '')
+```
+
+The returned object exposes `data`, `loading`, `error`, and `refresh()`. All properties are reactive and can be read inside `effect()` or any DOM binding.
+
+```js
+// manual re-fetch
+post.refresh()
+
+// polling every 30 seconds
+const prices = resource(fetchPrices, { poll: 30_000 })
+```
+
+When `state.id` changes in the example above, the resource re-fetches automatically. Stale responses from previous fetches are discarded.
+
+---
+
 ### Cleanup
 
 Every DOM binding returns a cleanup function. Call it to stop reactive updates on that element.
@@ -140,6 +168,7 @@ stop() // element no longer updates
 | [Theme toggle](examples/theme-toggle.html) | className and text bindings |
 | [Form preview](examples/form-preview.html) | Live preview from form inputs |
 | [Widget](examples/widget.html) | Bindings created on mount and cleaned up on unmount |
+| [Resource](examples/resource.html) | Async data fetching with loading and error state |
 
 ---
 

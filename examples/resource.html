@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resource — supastate</title>
+  <style>
+    body { font-family: sans-serif; max-width: 480px; margin: 4rem auto; padding: 0 1rem; }
+    h1 { margin-bottom: 0.25rem; }
+    p { color: #666; margin-bottom: 2rem; }
+    .card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 1.5rem; min-height: 6rem; }
+    .card h2 { margin: 0 0 0.5rem; font-size: 1.1rem; }
+    .card p { margin: 0; color: #444; }
+    .meta { font-size: 0.875rem; color: #999; margin-top: 0.5rem; }
+    .error { color: #c00; }
+    .controls { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; }
+    select, button { padding: 0.5rem 0.75rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; background: #fff; cursor: pointer; }
+    button:hover { background: #f5f5f5; }
+    #status { font-size: 0.875rem; color: #999; }
+  </style>
+</head>
+<body>
+  <h1>Async resource</h1>
+  <p>Fetches a post from JSONPlaceholder. Re-fetches automatically when the selected ID changes.</p>
+
+  <div class="controls">
+    <select id="post-id">
+      <option value="1">Post 1</option>
+      <option value="2">Post 2</option>
+      <option value="3">Post 3</option>
+      <option value="4">Post 4</option>
+      <option value="5">Post 5</option>
+    </select>
+    <button id="refresh-btn">Refresh</button>
+    <span id="status"></span>
+  </div>
+
+  <div class="card">
+    <h2 id="post-title"></h2>
+    <p id="post-body"></p>
+    <p id="post-error" class="error"></p>
+  </div>
+
+  <script type="module">
+    import { reactive, text, effect } from '../dist/index.mjs'
+    import { resource } from '../dist/index.mjs'
+
+    const state = reactive({ id: 1 })
+
+    const post = resource(async () => {
+      const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${state.id}`)
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      return res.json()
+    })
+
+    // status indicator
+    text('#status', () => post.loading ? 'Loading…' : '')
+
+    // render post or error
+    effect(() => {
+      document.getElementById('post-title').textContent =
+        post.loading ? '—' : post.error ? 'Error' : post.data?.title ?? ''
+
+      document.getElementById('post-body').textContent =
+        post.loading ? '' : post.error ? '' : post.data?.body ?? ''
+
+      document.getElementById('post-error').textContent =
+        post.error ? post.error.message : ''
+    })
+
+    // changing the select triggers an automatic re-fetch
+    document.getElementById('post-id').addEventListener('change', e => {
+      state.id = Number(e.target.value)
+    })
+
+    document.getElementById('refresh-btn').onclick = () => post.refresh()
+  </script>
+</body>
+</html>
