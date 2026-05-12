@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Counter — supastate</title>
+  <style>
+    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 4rem; gap: 1rem; }
+    h1 { font-size: 5rem; margin: 0; }
+    div { display: flex; gap: 1rem; }
+    button { font-size: 2rem; padding: 0.5rem 1.5rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1 id="count"></h1>
+  <div>
+    <button id="dec">−</button>
+    <button id="inc">+</button>
+  </div>
+
+  <!--
+    CDN alternative:
+    import { reactive, text } from 'https://cdn.jsdelivr.net/npm/supastate/dist/index.mjs'
+  -->
+  <script type="module">
+    import { reactive, text } from '../dist/index.mjs'
+
+    const state = reactive({ count: 0 })
+
+    text('#count', () => state.count)
+
+    document.getElementById('inc').onclick = () => state.count++
+    document.getElementById('dec').onclick = () => state.count--
+  </script>
+</body>
+</html>

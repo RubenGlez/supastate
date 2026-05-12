@@ -1,146 +1,155 @@
-![supastate](/src/supastate.jpg)
-
 # supastate
 
-A lightweight, easy-to-use React hook for managing global state without the complexity of external state management libraries. Designed to be minimal yet powerful, `supastate` enables developers to efficiently manage serializable state with operations that include setting, updating, and effectively reacting to state changes. It's ideal for small to medium-sized applications that require flexible global state management.
+Tiny reactive engine for plain HTML and vanilla JavaScript.
 
-## Features
+No virtual DOM. No components. No build step required.
 
-- **Custom Hook Factory**: Generate tailor-made React hooks (`useSupastate`) for efficient state management in applications.
-- **Serializable State Only**: Supports states that are serializable, enhancing compatibility with JSON serialization for features like state persistence.
-- **In-Memory State**: Maintains state in memory for fast access and updates, with each hook managing its own state.
-- **Flexible State Updates**:
-  - **Direct Set**: Allows direct replacement of the current state.
-  - **Updater Function**: Enables complex state transformations through a functional updater.
-- **Automatic Update Propagation**: Uses a listener pattern for automatic re-rendering of components on state updates.
-- **Clean-Up Mechanism**: Automatically removes listeners on component unmount, preventing memory leaks.
-- **Minimal API**: Simplifies state management with an intuitive and minimalistic API, reducing boilerplate.
-- **Immutable Updates**: Promotes state immutability for reliable and predictable updates.
-- **Easy Integration**: Designed for seamless integration into existing React projects with minimal setup.
-- **State Persistence**: Provides methods to maintain state between sessions using `localStorage`.
+```html
+<script type="module">
+  import { reactive, text } from 'https://cdn.jsdelivr.net/npm/supastate/dist/index.mjs'
 
-Leverage the power of React's ecosystem with this lightweight, intuitive state management solution.
+  const state = reactive({ count: 0 })
 
-## Installation
+  text('#counter', () => state.count)
 
-```bash
-# npm
-npm install supastate
-
-# yarn
-yarn add supastate
+  document.getElementById('increment').onclick = () => state.count++
+</script>
 ```
-
-## Usage
-
-Here's a quick example to get you started:
-
-```jsx
-import React from "react";
-import { createSupastate } from "supastate";
-
-// Using createSupastate to create a global state for a user profile
-const useUserProfile = createSupastate({ name: "John Doe", age: 30 }); // Initial state is a profile object
-
-// UserProfile Component: Displays the user's name and age
-function UserProfile() {
-  const { state: userProfile } = useUserProfile();
-
-  return (
-    <div>
-      <p>Name: {userProfile.name}</p>
-      <p>Age: {userProfile.age}</p>
-    </div>
-  );
-}
-
-// UpdateName Component: Has an input field to update the user's name
-function UpdateName() {
-  const { update } = useUserProfile();
-
-  return (
-    <input
-      type="text"
-      placeholder="Enter new name"
-      onChange={(e) =>
-        update((currentProfile) => ({
-          ...currentProfile,
-          name: e.target.value,
-        }))
-      }
-    />
-  );
-}
-
-// IncrementAge Component: Has a button to increment the user's age
-function IncrementAge() {
-  const { update } = useUserProfile();
-
-  return (
-    <button
-      onClick={() =>
-        update((currentProfile) => ({
-          ...currentProfile,
-          age: currentProfile.age + 1,
-        }))
-      }
-    >
-      Increment Age
-    </button>
-  );
-}
-
-// Main application that uses the UserProfile, UpdateName, and IncrementAge components
-function App() {
-  return (
-    <div>
-      <UserProfile />
-      <UpdateName />
-      <IncrementAge />
-    </div>
-  );
-}
-```
-
-## API Reference
-
-- `set(payload: T)`: Sets the new state.
-- `update(updater: (state: T) => T)`: Updates the state based on the previous state.
-- `reset()`: Resets the state to the initial state.
-- `createSupastate(initialState: T)`: Creates a new instance of the supastate hook with the defined initial state.
-
-## Support & Contributing
-
-If you need help or have any questions about supaclipboard, please don't hesitate to open an issue in the GitHub repository. I'm always here to help and would love to hear your feedback. If you're interested in contributing to the library, whether it's by reporting bugs, suggesting features, or submitting improvements, your contributions are greatly appreciated. Please feel free to open an issue or submit a pull request.
-
-Thank you for using supastate!
 
 ---
 
-## Roadmap
+## Installation
 
-### 1. **Functional Enhancements**
+**CDN** — drop it directly into any HTML file:
 
-- **Async Actions Support**: Makes handling asynchronous operations easier.
-- **Middlewares**: Enables adding extra logic for actions, useful for activities like logging and persistence.
+```html
+<script type="module">
+  import { reactive, text } from 'https://cdn.jsdelivr.net/npm/supastate/dist/index.mjs'
+</script>
+```
 
-### 2. **Performance Optimization**
+**npm** — for projects with a build step:
 
-- **Memoization**: Utilizes memoization to improve efficiency.
-- **Updates Batching**: Minimizes re-renders by grouping state updates.
+```bash
+npm install supastate
+```
 
-### 3. **Testing and Security**
+---
 
-- **Testing**: Implements unit and integration tests to ensure reliability.
-- **Data Sanitization**: Protects against security risks by sanitizing user inputs.
+## API
 
-### 4. **Compatibility and Usability**
+### `reactive(object)`
 
-- **Additional Hooks**: Adds hooks to ease common use cases.
-- **Concurrent Mode and TypeScript Support**: Ensures compatibility with the latest React features and enhances experience with TypeScript support.
+Makes a plain object deeply reactive. Mutations to any nested property are automatically tracked.
 
-### 5. **Community**
+```js
+const state = reactive({ count: 0, user: { name: 'Ruben' } })
 
-- **Documentation and Repository**: Provides detailed documentation and manages an accessible repository to encourage collaboration.
-- **User Feedback**: Adjusts the roadmap based on user suggestions and needs.
-- **Continuous Update**: Stays updated with React advancements.
+state.count++          // tracked
+state.user.name = 'X'  // also tracked
+state.items.push(4)    // also tracked
+```
+
+---
+
+### `effect(fn)`
+
+Runs `fn` immediately and re-runs it whenever any reactive value it reads changes.
+
+Returns a cleanup function that stops the effect.
+
+```js
+const stop = effect(() => {
+  console.log('count is', state.count)
+})
+
+stop() // unsubscribe
+```
+
+---
+
+### `text(el, fn)` / `bind(el, fn)`
+
+Keeps an element's `textContent` in sync with a reactive expression.
+
+Accepts a CSS selector string or a DOM element.
+
+```js
+text('#counter', () => state.count)
+text(myEl, () => `Hello, ${state.user.name}`)
+```
+
+`bind` is an alias for `text`.
+
+---
+
+### `attr(el, name, fn)`
+
+Keeps an attribute in sync with a reactive expression.
+
+- `false` or `null` removes the attribute
+- `true` sets the attribute with an empty string value
+- any other value sets the attribute as a string
+
+```js
+attr('#submit', 'disabled', () => state.loading)
+attr('#link', 'href', () => state.url)
+```
+
+---
+
+### `className(el, fn)`
+
+Keeps an element's `className` in sync with a reactive expression.
+
+```js
+className(document.body, () => state.dark ? 'dark' : 'light')
+```
+
+---
+
+### `style(el, fn)`
+
+Keeps inline styles in sync with a reactive expression. The function should return a style object.
+
+```js
+style('#overlay', () => ({ opacity: state.visible ? '1' : '0' }))
+```
+
+---
+
+### Cleanup
+
+Every DOM binding returns a cleanup function. Call it to stop reactive updates on that element.
+
+```js
+const stop = text('#counter', () => state.count)
+stop() // element no longer updates
+```
+
+---
+
+## Examples
+
+| Example | Description |
+|---|---|
+| [Counter](examples/counter.html) | Basic reactive state and text binding |
+| [Todo list](examples/todo.html) | Array reactivity, attr binding, dynamic lists |
+| [Theme toggle](examples/theme-toggle.html) | className and text bindings |
+| [Form preview](examples/form-preview.html) | Live preview from form inputs |
+
+---
+
+## Design goals
+
+- **No build step** — works directly in the browser via `<script type="module">`
+- **Tiny** — under 3kb minified
+- **Framework agnostic** — works alongside Rails, Laravel, Django, HTMX, Astro, or nothing at all
+- **Fine-grained** — only the exact DOM nodes affected by a change are updated
+- **Explicit API** — no magic HTML attributes, no template syntax, just JavaScript
+
+---
+
+## License
+
+MIT

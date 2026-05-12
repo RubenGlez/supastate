@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Preview — supastate</title>
+  <style>
+    body { font-family: sans-serif; max-width: 640px; margin: 4rem auto; padding: 0 1rem; }
+    h2 { margin-bottom: 1rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    label { display: block; margin-bottom: 1rem; }
+    span { display: block; font-size: 0.875rem; color: #666; margin-bottom: 0.25rem; }
+    input, textarea { width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    textarea { height: 80px; resize: vertical; }
+    .card { border: 1px solid #eee; border-radius: 8px; padding: 1.5rem; background: #fafafa; }
+    .card h3 { margin: 0 0 0.5rem; }
+    .card p { margin: 0; color: #444; white-space: pre-wrap; }
+    .card .role { font-size: 0.875rem; color: #888; margin-bottom: 0.75rem; }
+    .placeholder { color: #bbb; font-style: italic; }
+  </style>
+</head>
+<body>
+  <h2>Profile editor</h2>
+  <div class="grid">
+    <form>
+      <label>
+        <span>Name</span>
+        <input id="name-input" type="text" placeholder="Your name">
+      </label>
+      <label>
+        <span>Role</span>
+        <input id="role-input" type="text" placeholder="e.g. Designer">
+      </label>
+      <label>
+        <span>Bio</span>
+        <textarea id="bio-input" placeholder="A short bio..."></textarea>
+      </label>
+    </form>
+
+    <div class="card">
+      <h3 id="preview-name" class="placeholder">Your name</h3>
+      <p id="preview-role" class="role placeholder">Your role</p>
+      <p id="preview-bio" class="placeholder">Your bio will appear here.</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { reactive, text, effect } from '../dist/index.mjs'
+
+    const state = reactive({ name: '', role: '', bio: '' })
+
+    document.getElementById('name-input').addEventListener('input', e => { state.name = e.target.value })
+    document.getElementById('role-input').addEventListener('input', e => { state.role = e.target.value })
+    document.getElementById('bio-input').addEventListener('input', e => { state.bio = e.target.value })
+
+    // update preview text, falling back to placeholder when empty
+    text('#preview-name', () => state.name || 'Your name')
+    text('#preview-role', () => state.role || 'Your role')
+    text('#preview-bio',  () => state.bio  || 'Your bio will appear here.')
+
+    // toggle placeholder styling
+    effect(() => {
+      document.getElementById('preview-name').className = state.name ? '' : 'placeholder'
+      document.getElementById('preview-role').className = `role${state.role ? '' : ' placeholder'}`
+      document.getElementById('preview-bio').className  = state.bio  ? '' : 'placeholder'
+    })
+  </script>
+</body>
+</html>
