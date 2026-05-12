@@ -1,3 +1,5 @@
+![supastate](./supastate.png)
+
 # supastate
 
 Tiny reactive engine for plain HTML and vanilla JavaScript.
