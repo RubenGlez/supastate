@@ -51,7 +51,13 @@ export function style(
 ): () => void {
   const element = resolve(el) as HTMLElement | null;
   if (!element) return () => {};
+  let prevKeys: string[] = [];
   return effect(() => {
-    Object.assign(element.style, fn());
+    const next = fn();
+    for (const key of prevKeys) {
+      if (!(key in next)) (element.style as unknown as Record<string, string>)[key] = "";
+    }
+    Object.assign(element.style, next);
+    prevKeys = Object.keys(next);
   });
 }

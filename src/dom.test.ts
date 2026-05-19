@@ -148,4 +148,17 @@ describe("style", () => {
     state.visible = false;
     expect(div.style.opacity).toBe("1");
   });
+
+  it("removes a style property when it is dropped from the result", () => {
+    const state = reactive({ highlight: true });
+    const div = el("div") as HTMLElement;
+    style(div, () =>
+      state.highlight ? { opacity: "0.5", color: "red" } : { opacity: "1" }
+    );
+    expect(div.style.opacity).toBe("0.5");
+    expect(div.style.color).toBe("red");
+    state.highlight = false;
+    expect(div.style.opacity).toBe("1");
+    expect(div.style.color).toBe("");
+  });
 });
