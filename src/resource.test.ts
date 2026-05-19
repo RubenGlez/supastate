@@ -93,7 +93,7 @@ describe("resource", () => {
   it("polls on the given interval", async () => {
     jest.useFakeTimers();
     let calls = 0;
-    const r = resource(() => Promise.resolve(++calls), { poll: 1000 });
+    resource(() => Promise.resolve(++calls), { poll: 1000 });
 
     // initial fetch
     await Promise.resolve();

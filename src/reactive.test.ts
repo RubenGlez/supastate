@@ -55,11 +55,11 @@ describe("reactive", () => {
     let runA = 0;
     let runB = 0;
     effect(() => {
-      state.a;
+      void state.a;
       runA++;
     });
     effect(() => {
-      state.b;
+      void state.b;
       runB++;
     });
     state.a = 10;
@@ -81,7 +81,7 @@ describe("effect", () => {
     const state = reactive({ x: 1 });
     let runs = 0;
     effect(() => {
-      state.x;
+      void state.x;
       runs++;
     });
     state.x = 2;
@@ -93,7 +93,7 @@ describe("effect", () => {
     const state = reactive({ x: 1 });
     let runs = 0;
     const stop = effect(() => {
-      state.x;
+      void state.x;
       runs++;
     });
     stop();
@@ -111,10 +111,10 @@ describe("effect", () => {
     state.flag = false;
     expect(observed).toBe(2);
     // changing a should no longer trigger the effect
-    let runs = 0;
+    let _runs = 0;
     effect(() => {
-      state.a;
-      runs++;
+      void state.a;
+      _runs++;
     });
     state.flag = false; // no change
     state.a = 99;
