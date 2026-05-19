@@ -109,4 +109,48 @@ describe("resource", () => {
 
     jest.useRealTimers();
   });
+
+  it("stop() discards an in-flight fetch", async () => {
+    let resolveIt!: (v: number) => void;
+    const p = new Promise<number>((r) => (resolveIt = r));
+    const r = resource(() => p);
+
+    r.stop();
+    resolveIt(99);
+    await tick();
+
+    expect(r.data).toBe(null);
+    expect(r.loading).toBe(true);
+  });
+
+  it("stop() prevents reactive deps from triggering re-fetches", async () => {
+    const state = reactive({ id: 1 });
+    const fetcher = jest.fn((id: number) => Promise.resolve(`user-${id}`));
+    const r = resource(() => fetcher(state.id));
+
+    await tick();
+    expect(fetcher).toHaveBeenCalledTimes(1);
+
+    r.stop();
+    state.id = 2;
+    await tick();
+
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("stop() halts polling", async () => {
+    jest.useFakeTimers();
+    let calls = 0;
+    const r = resource(() => Promise.resolve(++calls), { poll: 1000 });
+
+    await Promise.resolve();
+    expect(calls).toBe(1);
+
+    r.stop();
+    jest.advanceTimersByTime(3000);
+    await Promise.resolve();
+
+    expect(calls).toBe(1);
+    jest.useRealTimers();
+  });
 });

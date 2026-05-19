@@ -11,6 +11,7 @@ export interface Resource<T> {
   readonly loading: boolean;
   readonly error: Error | null;
   refresh(): void;
+  stop(): void;
 }
 
 export interface ResourceOptions {
@@ -47,12 +48,13 @@ export function resource<T>(
     }
   }
 
-  effect(() => {
+  const stopEffect = effect(() => {
     execute();
   });
 
+  let intervalId: ReturnType<typeof setInterval> | undefined;
   if (options.poll !== undefined) {
-    setInterval(() => {
+    intervalId = setInterval(() => {
       execute();
     }, options.poll);
   }
@@ -70,6 +72,11 @@ export function resource<T>(
     },
     refresh: () => {
       execute();
+    },
+    stop: () => {
+      version++;
+      stopEffect();
+      if (intervalId !== undefined) clearInterval(intervalId);
     },
   };
 }
