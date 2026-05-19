@@ -134,7 +134,7 @@ text('#title', () => post.loading ? 'Loading…' : post.data.title)
 text('#error', () => post.error?.message ?? '')
 ```
 
-The returned object exposes `data`, `loading`, `error`, and `refresh()`. All properties are reactive and can be read inside `effect()` or any DOM binding.
+The returned object exposes `data`, `loading`, `error`, `refresh()`, and `stop()`. All properties are reactive and can be read inside `effect()` or any DOM binding.
 
 ```js
 // manual re-fetch
@@ -142,6 +142,9 @@ post.refresh()
 
 // polling every 30 seconds
 const prices = resource(fetchPrices, { poll: 30_000 })
+
+// stop fetching and cancel any in-flight request
+post.stop()
 ```
 
 When `state.id` changes in the example above, the resource re-fetches automatically. Stale responses from previous fetches are discarded.
