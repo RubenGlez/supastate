@@ -47,8 +47,6 @@ export function resource<T>(
     }
   }
 
-  // Runs execute() immediately and re-runs whenever reactive deps
-  // read synchronously inside fetcher() change.
   effect(() => {
     execute();
   });

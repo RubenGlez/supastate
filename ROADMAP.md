@@ -26,21 +26,13 @@ text('#temp', () => weather.loading ? 'Loading...' : weather.data.temp)
 text('#error', () => weather.error?.message ?? '')
 ```
 
-Planned features:
+Shipped:
 
 - `loading`, `data`, `error` reactive state
 - automatic re-fetch when reactive dependencies change
 - manual `refresh()`
 - polling interval
-- promise deduplication
-- stale-while-revalidate cache
-- retries with backoff
-
-Open questions:
-
-- Should `resource()` ship in core or as a separate optional module?
-- How opinionated should caching be?
-- How should retries be configured?
+- stale response discarding (version counter)
 
 ---
 
@@ -89,7 +81,7 @@ Once any of these appear, supastate becomes another frontend framework. That is 
 
 ## Phase 3 — Evaluate
 
-After v1.1 ships:
+Now that v1.1 has shipped:
 
 - collect developer feedback
 - audit ergonomics against real projects
