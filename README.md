@@ -74,7 +74,7 @@ stop() // unsubscribe
 
 Keeps an element's `textContent` in sync with a reactive expression.
 
-Accepts a CSS selector string or a DOM element.
+Accepts a CSS selector string or a DOM element. The expression may return a string, number, or boolean — all are coerced to a string.
 
 ```js
 text('#counter', () => state.count)

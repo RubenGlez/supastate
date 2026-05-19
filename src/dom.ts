@@ -6,7 +6,7 @@ function resolve(el: El): Element | null {
   return typeof el === "string" ? document.querySelector(el) : el;
 }
 
-export function bind(el: El, fn: () => string | number | boolean): () => void {
+export function text(el: El, fn: () => string | number | boolean): () => void {
   const element = resolve(el);
   if (!element) return () => {};
   return effect(() => {
@@ -14,9 +14,7 @@ export function bind(el: El, fn: () => string | number | boolean): () => void {
   });
 }
 
-export function text(el: El, fn: () => string | number): () => void {
-  return bind(el, fn);
-}
+export const bind = text;
 
 export function attr(
   el: El,
