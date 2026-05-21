@@ -52,11 +52,12 @@ Planned features:
 
 ---
 
-## v1.3 — Utilities
+## v1.3 — Utilities (in progress)
 
 Small ergonomic helpers that stay within the no-framework constraint:
 
-- `computed(fn)` — derived reactive values
+- `computed(fn)` — derived reactive values ✓ (shipped in v3.0.0)
+- `classList(el, fn)` — additive class toggling via `Record<string, boolean>` ✓ (shipped in v3.0.0)
 - `watch(fn, callback)` — observe a value and run a callback on change
 - `batch(fn)` — group multiple mutations into a single update pass
 
@@ -81,7 +82,7 @@ Once any of these appear, supastate becomes another frontend framework. That is 
 
 ## Phase 3 — Evaluate
 
-Now that v1.1 has shipped:
+Now that v3.0.0 has shipped:
 
 - collect developer feedback
 - audit ergonomics against real projects
