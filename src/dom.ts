@@ -14,8 +14,6 @@ export function text(el: El, fn: () => string | number | boolean): () => void {
   });
 }
 
-export const bind = text;
-
 export function attr(
   el: El,
   name: string,
@@ -32,6 +30,22 @@ export function attr(
     } else {
       element.setAttribute(name, String(value));
     }
+  });
+}
+
+export function classList(el: El, fn: () => Record<string, boolean>): () => void {
+  const element = resolve(el);
+  if (!element) return () => {};
+  let prevKeys: string[] = [];
+  return effect(() => {
+    const next = fn();
+    for (const key of prevKeys) {
+      if (!(key in next)) element.classList.remove(key);
+    }
+    for (const [key, value] of Object.entries(next)) {
+      element.classList.toggle(key, value);
+    }
+    prevKeys = Object.keys(next);
   });
 }
 

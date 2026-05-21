@@ -1,4 +1,4 @@
-import { reactive, effect } from "./reactive";
+import { reactive, effect, computed } from "./reactive";
 
 describe("reactive", () => {
   it("tracks property access and triggers on mutation", () => {
@@ -65,6 +65,84 @@ describe("reactive", () => {
     state.a = 10;
     expect(runA).toBe(2);
     expect(runB).toBe(1);
+  });
+});
+
+describe("computed", () => {
+  it("returns the derived value", () => {
+    const state = reactive({ count: 2 });
+    const double = computed(() => state.count * 2);
+    expect(double.value).toBe(4);
+  });
+
+  it("updates when a dep changes", () => {
+    const state = reactive({ count: 2 });
+    const double = computed(() => state.count * 2);
+    state.count = 5;
+    expect(double.value).toBe(10);
+  });
+
+  it("is lazy — fn does not run until value is read", () => {
+    const state = reactive({ count: 0 });
+    let runs = 0;
+    const c = computed(() => { runs++; return state.count * 2; });
+    expect(runs).toBe(0);
+    void c.value;
+    expect(runs).toBe(1);
+  });
+
+  it("memoizes — fn does not re-run on repeated reads without dep change", () => {
+    const state = reactive({ count: 3 });
+    let runs = 0;
+    const c = computed(() => { runs++; return state.count * 2; });
+    void c.value;
+    void c.value;
+    void c.value;
+    expect(runs).toBe(1);
+  });
+
+  it("re-runs fn only once per dep change, on next read", () => {
+    const state = reactive({ count: 0 });
+    let runs = 0;
+    const c = computed(() => { runs++; return state.count * 2; });
+    void c.value; // first run
+    state.count = 1;
+    state.count = 2;
+    void c.value; // one re-run, not two
+    expect(runs).toBe(2);
+  });
+
+  it("is trackable — outer effect re-runs when computed value changes", () => {
+    const state = reactive({ count: 1 });
+    const double = computed(() => state.count * 2);
+    let observed = 0;
+    effect(() => { observed = double.value; });
+    expect(observed).toBe(2);
+    state.count = 3;
+    expect(observed).toBe(6);
+  });
+
+  it("outer effect continues tracking after reading computed", () => {
+    const state = reactive({ a: 1, b: 10 });
+    const ca = computed(() => state.a * 2);
+    let result = 0;
+    effect(() => { result = ca.value + state.b; });
+    expect(result).toBe(12);
+    state.b = 20;
+    expect(result).toBe(22);
+    state.a = 2;
+    expect(result).toBe(24);
+  });
+
+  it("stop() prevents re-evaluation when deps change", () => {
+    const state = reactive({ count: 1 });
+    let runs = 0;
+    const c = computed(() => { runs++; return state.count * 2; });
+    void c.value; // initial read
+    c.stop();
+    state.count = 99;
+    void c.value; // should return stale cached value
+    expect(runs).toBe(1);
   });
 });
 

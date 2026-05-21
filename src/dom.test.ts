@@ -1,5 +1,5 @@
 import { reactive } from "./reactive";
-import { bind, text, attr, className, style } from "./dom";
+import { text, attr, classList, className, style } from "./dom";
 
 function el(tag: string): HTMLElement {
   return document.createElement(tag);
@@ -9,7 +9,7 @@ describe("bind / text", () => {
   it("sets textContent immediately", () => {
     const state = reactive({ count: 0 });
     const div = el("div");
-    bind(div, () => state.count);
+    text(div, () => state.count);
     expect(div.textContent).toBe("0");
   });
 
@@ -43,7 +43,7 @@ describe("bind / text", () => {
   it("returns a noop when selector matches nothing", () => {
     const state = reactive({ x: 1 });
     expect(() => {
-      const stop = bind("#does-not-exist", () => state.x);
+      const stop = text("#does-not-exist", () => state.x);
       stop();
     }).not.toThrow();
   });
@@ -95,6 +95,68 @@ describe("attr", () => {
     stop();
     state.href = "/other";
     expect(a.getAttribute("href")).toBe("/home");
+  });
+});
+
+describe("classList", () => {
+  it("adds classes where value is true", () => {
+    const state = reactive({ active: true, loading: false });
+    const div = el("div");
+    classList(div, () => ({ active: state.active, loading: state.loading }));
+    expect(div.classList.contains("active")).toBe(true);
+    expect(div.classList.contains("loading")).toBe(false);
+  });
+
+  it("toggles classes when state changes", () => {
+    const state = reactive({ active: false });
+    const div = el("div");
+    classList(div, () => ({ active: state.active }));
+    state.active = true;
+    expect(div.classList.contains("active")).toBe(true);
+    state.active = false;
+    expect(div.classList.contains("active")).toBe(false);
+  });
+
+  it("removes a class when its key disappears from the return value", () => {
+    const state = reactive({ highlight: true });
+    const div = el("div");
+    classList(div, () => {
+      const c: Record<string, boolean> = {};
+      if (state.highlight) c.highlight = true;
+      return c;
+    });
+    expect(div.classList.contains("highlight")).toBe(true);
+    state.highlight = false;
+    expect(div.classList.contains("highlight")).toBe(false);
+  });
+
+  it("does not touch pre-existing classes", () => {
+    const state = reactive({ active: true });
+    const div = el("div");
+    div.className = "btn btn-primary";
+    classList(div, () => ({ active: state.active }));
+    expect(div.classList.contains("btn")).toBe(true);
+    expect(div.classList.contains("btn-primary")).toBe(true);
+    state.active = false;
+    expect(div.classList.contains("btn")).toBe(true);
+    expect(div.classList.contains("btn-primary")).toBe(true);
+  });
+
+  it("stops updating after cleanup", () => {
+    const state = reactive({ active: true });
+    const div = el("div");
+    const stop = classList(div, () => ({ active: state.active }));
+    stop();
+    state.active = false;
+    expect(div.classList.contains("active")).toBe(true);
+  });
+
+  it("returns a noop when selector matches nothing", () => {
+    const state = reactive({ x: true });
+    expect(() => {
+      const stop = classList("#does-not-exist", () => ({ active: state.x }));
+      stop();
+    }).not.toThrow();
   });
 });
 

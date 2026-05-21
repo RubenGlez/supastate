@@ -11,7 +11,8 @@ export interface Resource<T> {
   readonly loading: boolean;
   readonly error: Error | null;
   refresh(): void;
-  stop(): void;
+  /** Detaches from the reactive graph and clears polling. refresh() remains usable for manual fetches. */
+  detach(): void;
 }
 
 export interface ResourceOptions {
@@ -73,7 +74,7 @@ export function resource<T>(
     refresh: () => {
       execute();
     },
-    stop: () => {
+    detach: () => {
       version++;
       stopEffect();
       if (intervalId !== undefined) clearInterval(intervalId);

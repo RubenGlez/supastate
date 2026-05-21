@@ -1,9 +1,11 @@
 type EffectFn = {
   (): void;
   deps: Set<Set<EffectFn>>;
+  scheduler?: (fn: EffectFn) => void;
 };
 
 let activeEffect: EffectFn | null = null;
+let scheduler: (fn: EffectFn) => void = (fn) => fn();
 
 const targetMap = new WeakMap<object, Map<string | symbol, Set<EffectFn>>>();
 const proxyCache = new WeakMap<object, object>();
@@ -23,7 +25,7 @@ function trigger(target: object, key: string | symbol): void {
   if (!depsMap) return;
   const dep = depsMap.get(key);
   if (!dep) return;
-  [...dep].forEach((effectFn) => effectFn());
+  [...dep].forEach((effectFn) => (effectFn.scheduler ?? scheduler)(effectFn));
 }
 
 function cleanup(effectFn: EffectFn): void {
@@ -52,6 +54,54 @@ export function reactive<T extends object>(target: T): T {
   const proxy = new Proxy(target, handler) as T;
   proxyCache.set(target, proxy);
   return proxy;
+}
+
+export interface Computed<T> {
+  readonly value: T;
+  stop(): void;
+}
+
+export function computed<T>(fn: () => T): Computed<T> {
+  let dirty = true;
+  let cached: T;
+  const ref = {} as object;
+
+  const runner: EffectFn = Object.assign(
+    () => {
+      cleanup(runner);
+      activeEffect = runner;
+      try {
+        cached = fn();
+      } finally {
+        activeEffect = null;
+      }
+      dirty = false;
+    },
+    {
+      deps: new Set<Set<EffectFn>>(),
+      scheduler: () => {
+        if (!dirty) {
+          dirty = true;
+          trigger(ref, "value");
+        }
+      },
+    }
+  );
+
+  return {
+    get value() {
+      track(ref, "value");
+      if (dirty) {
+        const parent = activeEffect;
+        runner();
+        activeEffect = parent;
+      }
+      return cached;
+    },
+    stop() {
+      cleanup(runner);
+    },
+  };
 }
 
 export function effect(fn: () => void): () => void {

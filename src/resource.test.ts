@@ -110,12 +110,12 @@ describe("resource", () => {
     jest.useRealTimers();
   });
 
-  it("stop() discards an in-flight fetch", async () => {
+  it("detach() discards an in-flight fetch", async () => {
     let resolveIt!: (v: number) => void;
     const p = new Promise<number>((r) => (resolveIt = r));
     const r = resource(() => p);
 
-    r.stop();
+    r.detach();
     resolveIt(99);
     await tick();
 
@@ -123,7 +123,7 @@ describe("resource", () => {
     expect(r.loading).toBe(true);
   });
 
-  it("stop() prevents reactive deps from triggering re-fetches", async () => {
+  it("detach() prevents reactive deps from triggering re-fetches", async () => {
     const state = reactive({ id: 1 });
     const fetcher = jest.fn((id: number) => Promise.resolve(`user-${id}`));
     const r = resource(() => fetcher(state.id));
@@ -131,14 +131,14 @@ describe("resource", () => {
     await tick();
     expect(fetcher).toHaveBeenCalledTimes(1);
 
-    r.stop();
+    r.detach();
     state.id = 2;
     await tick();
 
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
-  it("stop() halts polling", async () => {
+  it("detach() halts polling", async () => {
     jest.useFakeTimers();
     let calls = 0;
     const r = resource(() => Promise.resolve(++calls), { poll: 1000 });
@@ -146,11 +146,24 @@ describe("resource", () => {
     await Promise.resolve();
     expect(calls).toBe(1);
 
-    r.stop();
+    r.detach();
     jest.advanceTimersByTime(3000);
     await Promise.resolve();
 
     expect(calls).toBe(1);
     jest.useRealTimers();
+  });
+
+  it("refresh() still works after detach()", async () => {
+    let calls = 0;
+    const r = resource(() => Promise.resolve(++calls));
+    await tick();
+    expect(r.data).toBe(1);
+
+    r.detach();
+    r.refresh();
+    await tick();
+
+    expect(r.data).toBe(2);
   });
 });

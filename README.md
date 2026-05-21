@@ -70,7 +70,28 @@ stop() // unsubscribe
 
 ---
 
-### `text(el, fn)` / `bind(el, fn)`
+### `computed(fn)`
+
+Creates a lazy derived value. `fn` runs only when `.value` is first read, and re-runs only when a dependency has changed since the last read. Intermediate changes between reads are collapsed into one re-run.
+
+Returns a `Computed<T>` object with a `value` getter and a `stop()` method.
+
+```js
+const fullName = computed(() => `${state.firstName} ${state.lastName}`)
+
+text('#name', () => fullName.value)
+text('#greeting', () => `Hello, ${fullName.value}`)
+```
+
+`computed` values are reactive — an `effect` or DOM binding that reads `.value` will re-run when the computed updates.
+
+```js
+fullName.stop() // detach from the reactive graph
+```
+
+---
+
+### `text(el, fn)`
 
 Keeps an element's `textContent` in sync with a reactive expression.
 
@@ -80,8 +101,6 @@ Accepts a CSS selector string or a DOM element. The expression may return a stri
 text('#counter', () => state.count)
 text(myEl, () => `Hello, ${state.user.name}`)
 ```
-
-`bind` is an alias for `text`.
 
 ---
 
@@ -100,9 +119,24 @@ attr('#link', 'href', () => state.url)
 
 ---
 
+### `classList(el, fn)`
+
+Toggles individual classes reactively without touching any other classes on the element. The function should return an object mapping class names to booleans.
+
+```js
+classList('#btn', () => ({
+  active: state.active,
+  loading: state.loading,
+}))
+```
+
+Pre-existing classes (e.g. from your HTML or a CSS framework) are left untouched. A class that transitions to `false` or disappears from the return value is removed.
+
+---
+
 ### `className(el, fn)`
 
-Keeps an element's `className` in sync with a reactive expression.
+Replaces the element's entire `className` string with the return value of `fn`. Use this when you need full control over the class list; use `classList` for toggling individual classes.
 
 ```js
 className(document.body, () => state.dark ? 'dark' : 'light')
@@ -134,7 +168,7 @@ text('#title', () => post.loading ? 'Loading…' : post.data.title)
 text('#error', () => post.error?.message ?? '')
 ```
 
-The returned object exposes `data`, `loading`, `error`, `refresh()`, and `stop()`. All properties are reactive and can be read inside `effect()` or any DOM binding.
+The returned object exposes `data`, `loading`, `error`, `refresh()`, and `detach()`. All properties are reactive and can be read inside `effect()` or any DOM binding.
 
 ```js
 // manual re-fetch
@@ -143,8 +177,8 @@ post.refresh()
 // polling every 30 seconds
 const prices = resource(fetchPrices, { poll: 30_000 })
 
-// stop fetching and cancel any in-flight request
-post.stop()
+// detach from reactive graph and stop polling; refresh() still works for manual fetches
+post.detach()
 ```
 
 When `state.id` changes in the example above, the resource re-fetches automatically. Stale responses from previous fetches are discarded.
