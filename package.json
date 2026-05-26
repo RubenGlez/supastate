@@ -15,7 +15,8 @@
     "build": "rollup -c",
     "test": "jest",
     "test:w": "jest --watchAll",
-    "test:c": "jest --coverage"
+    "test:c": "jest --coverage",
+    "postversion": "git push && git push --tags"
   },
   "keywords": [
     "reactive",
