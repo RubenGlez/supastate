@@ -46,6 +46,14 @@ Every DOM binding is just an `effect()` that writes to a DOM node. All bindings 
 
 Rollup produces `dist/index.js` (CJS), `dist/index.mjs` (ESM), and `dist/index.d.ts`. The ESM build is what consumers use via CDN. Target bundle size is under 3kb unminified.
 
+## Releasing
+
+```bash
+pnpm version patch   # or minor / major
+```
+
+The `postversion` hook pushes the commit and tag automatically. The publish workflow on GitHub Actions fires from the tag and handles building, testing, and publishing to npm.
+
 ### Scope constraints
 
 Do not introduce: components, lifecycle hooks, virtual DOM, template syntax, custom HTML attributes, or a router. See `ROADMAP.md` for what is planned next (persistence, computed values).
