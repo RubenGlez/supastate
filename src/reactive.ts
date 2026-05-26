@@ -5,7 +5,7 @@ type EffectFn = {
 };
 
 let activeEffect: EffectFn | null = null;
-let scheduler: (fn: EffectFn) => void = (fn) => fn();
+const scheduler: (fn: EffectFn) => void = (fn) => fn();
 
 const targetMap = new WeakMap<object, Map<string | symbol, Set<EffectFn>>>();
 const proxyCache = new WeakMap<object, object>();
