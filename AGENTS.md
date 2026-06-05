@@ -56,4 +56,4 @@ The `postversion` hook pushes the commit and tag automatically. The publish work
 
 ### Scope constraints
 
-Do not introduce: components, lifecycle hooks, virtual DOM, template syntax, custom HTML attributes, or a router. See `ROADMAP.md` for what is planned next (persistence, computed values).
+Do not introduce: components, lifecycle hooks, virtual DOM, template syntax, custom HTML attributes, or a router. Persistence, `watch()`, and `batch()` are the planned next additions.
