@@ -3,3 +3,19 @@ minimumReleaseAge: 1440
 allowBuilds:
   esbuild: true
   sharp: true
+
+overrides:
+  form-data: ">=4.0.4"
+  braces: ">=3.0.3"
+  cross-spawn: ">=7.0.5"
+  minimatch: ">=3.1.4"
+  picomatch: ">=2.3.2"
+  ws: ">=8.20.1"
+  micromatch: ">=4.0.8"
+  esbuild: ">=0.24.3"
+  "rollup-plugin-esbuild>esbuild": ">=0.24.3"
+  "ts-jest>esbuild": ">=0.24.3"
+  "@babel/helpers": ">=7.26.10"
+  js-yaml: ">=3.14.2"
+  brace-expansion: ">=1.1.13"
+  "@tootallnate/once": ">=2.0.1"
