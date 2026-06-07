@@ -16,7 +16,9 @@
     "test": "jest",
     "test:w": "jest --watchAll",
     "test:c": "jest --coverage",
-    "postversion": "git push && git push --tags"
+    "release": "node scripts/release.mjs",
+    "release:minor": "node scripts/release.mjs minor",
+    "release:major": "node scripts/release.mjs major"
   },
   "keywords": [
     "reactive",
