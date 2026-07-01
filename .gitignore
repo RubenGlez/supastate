@@ -25,5 +25,9 @@ dist-ssr
 
 #jest
 coverage
-.harness/
 .pnpm-store/
+
+# doctier:begin — managed by 'doctier init', do not edit
+**/_prototype-*
+**/_spike/**
+# doctier:end
