@@ -9,6 +9,8 @@ Tiny reactive engine for plain HTML and vanilla JavaScript.
 
 No virtual DOM. No components. No build step required.
 
+**Project page:** [rubenglez.dev/supastate](https://rubenglez.dev/supastate)
+
 ```html
 <script type="module">
   import { reactive, text } from 'https://cdn.jsdelivr.net/npm/supastate/dist/index.mjs'
