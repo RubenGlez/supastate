@@ -2,6 +2,9 @@
 
 # supastate
 
+[![npm version](https://img.shields.io/npm/v/supastate)](https://www.npmjs.com/package/supastate)
+[![minzipped size](https://img.shields.io/bundlephobia/minzip/supastate)](https://bundlephobia.com/package/supastate)
+
 Tiny reactive engine for plain HTML and vanilla JavaScript.
 
 No virtual DOM. No components. No build step required.
