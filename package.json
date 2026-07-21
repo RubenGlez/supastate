@@ -1,7 +1,6 @@
 {
   "name": "supastate",
   "version": "3.0.3",
-  "homepage": "https://rubenglez.dev/supastate",
   "description": "Tiny reactive engine for plain HTML and vanilla JavaScript",
   "type": "module",
   "main": "./dist/index.cjs",
